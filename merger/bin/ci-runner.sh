@@ -6,3 +6,5 @@ else
 fi
 bundle install
 bundle exec bin/merge mgreensmith/testrepo
+
+bundle exec slack-post -s cozy -r naboo -m "The velopsipede has fired! Marketing production deploy is imminent!!"

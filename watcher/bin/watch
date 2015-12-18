@@ -8,7 +8,7 @@ $timeout = 5
 $winning_clicks = 10
 
 
-$last_press_time = nil
+$last_click_time = Time.now
 $clicks = 0
 
 connection :keyboard, adaptor: :keyboard
@@ -21,16 +21,19 @@ end
 
 def keypress(sender, key)
   return unless key == 'space'
-  $last_press_time ||= Time.now # only used for first iteration
+  click
+end
 
-  if $last_press_time < (Time.now - $timeout)
+def click
+  if $last_click_time < (Time.now - $timeout)
     puts "Starting, you must click at least once every #{$timeout} seconds"
-    $clicks = 1
-  else
-    $clicks += 1
-
   end
-  $last_press_time = Time.now
+  $clicks += 1
+  $last_click_time = Time.now
   puts $clicks
-  puts "YOU WIN" if $clicks == $winning_clicks
+  win if $clicks == $winning_clicks
+end
+
+def win
+  puts "you win!"
 end
