@@ -7,9 +7,23 @@ connection :keyboard, adaptor: :keyboard
 device :keyboard, driver: :keyboard, connection: :keyboard
 
 work do
+  $timeout = 5
+  $last_press_time = nil
+  $clicks = 0
+
+  puts "Start clicking"
   on keyboard, :key => :keypress
 end
 
 def keypress(sender, key)
-  puts key
+  return unless key == 'space'
+  $last_press_time ||= Time.now # only used for first iteration
+  if $last_press_time < (Time.now - $timeout)
+    puts "Starting loop, you have #{$timeout} seconds"
+    $clicks = 1
+  else
+    $clicks += 1
+  end
+  $last_press_time = Time.now
+  puts $clicks
 end
