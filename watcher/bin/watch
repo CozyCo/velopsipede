@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-require 'artoo'
 require 'net/http'
+require 'piface'
 
 # Max time between clicks, we reset the count to 0 if exceeded
 $timeout = 5
@@ -11,19 +11,7 @@ $winning_clicks = 10
 
 $last_click_time = Time.now
 $clicks = 0
-
-connection :keyboard, adaptor: :keyboard
-device :keyboard, driver: :keyboard, connection: :keyboard
-
-work do
-  puts "Start clicking"
-  on keyboard, :key => :keypress
-end
-
-def keypress(sender, key)
-  return unless key == 'space'
-  click
-end
+$last_button_state = 0
 
 def click
   if $last_click_time < (Time.now - $timeout)
@@ -46,4 +34,20 @@ def do_derpler
   http = Net::HTTP.new(uri.host, uri.port)
   request = Net::HTTP::Post.new(uri.request_uri)
   response = http.request(request)
+end
+
+def check_button
+  state = Piface.read(0)
+  if $last_button_state != state
+    if state == 1
+      click
+      sleep 0.02
+    end
+    $last_button_state = state
+  end
+end
+
+loop do
+  check_button
+  sleep 0.001
 end
