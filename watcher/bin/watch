@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
 require 'net/http'
-require 'piface'
+
+unless ARGV[0] && ARGV[0] == 'mac'
+  require 'piface'
+  $pi == true
+end
 
 # Max time between clicks, we reset the count to 0 if exceeded
 $timeout = 5
@@ -13,19 +17,29 @@ $last_click_time = Time.now
 $clicks = 0
 $last_button_state = 0
 
-def click
-  if $last_click_time < (Time.now - $timeout)
-    $clicks = 0
-    puts "Starting, you must click at least once every #{$timeout} seconds"
+class Time
+  def to_ms
+    (self.to_f * 1000.0).to_i
   end
+end
+
+def click
+  restart if $last_click_time < (Time.now - $timeout)
   $clicks += 1
   $last_click_time = Time.now
   puts $clicks
   win if $clicks == $winning_clicks
 end
 
+def restart
+  $clicks = 0
+  puts "Starting, you must click at least once every #{$timeout} seconds"
+  led('green', 0)
+end
+
 def win
   puts "you win!"
+  led('green', 1)
   do_derpler
 end
 
@@ -47,7 +61,29 @@ def check_button
   end
 end
 
+def led(color, value)
+  if color == 'green'
+    Piface.write(0, value)
+  end
+  if color == 'yellow'
+    Piface.write(1, value)
+  end
+end
+
+def maybe_toggle_yellow_led
+  if Time.now.to_ms > 500
+    led('yellow', 1)
+  else
+    led('yellow', 0)
+  end
+end
+
+####
+led('green', 0)
+led('yellow', 0)
+
 loop do
-  check_button
+  check_button if $pi
+  maybe_toggle_yellow_led
   sleep 0.001
 end
