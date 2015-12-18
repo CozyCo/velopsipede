@@ -3,8 +3,8 @@ require 'octokit'
 class Merger
 
   def initialize
-    token = ENV['GITHUB_ACCESS_TOKEN']
-    fail "GITHUB_ACCESS_TOKEN not set" if token.nil?
+    token = ENV['GITHUB_ACCESS_KEY']
+    fail "GITHUB_ACCESS_KEY not set" if token.nil?
     @gh = Octokit::Client.new(access_token: token)
   end
 
