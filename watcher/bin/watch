@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+
+require 'artoo'
+
+connection :keyboard, adaptor: :keyboard
+device :keyboard, driver: :keyboard, connection: :keyboard
+
+work do
+  on keyboard, :key => :keypress
+end
+
+def keypress(sender, key)
+  puts key
+end
