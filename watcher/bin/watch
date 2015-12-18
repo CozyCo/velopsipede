@@ -1,16 +1,20 @@
 #!/usr/bin/env ruby
-
-
 require 'artoo'
+
+# Max time between clicks, we reset the count to 0 if exceeded
+$timeout = 5
+
+# The number of clicks needed to win
+$winning_clicks = 10
+
+
+$last_press_time = nil
+$clicks = 0
 
 connection :keyboard, adaptor: :keyboard
 device :keyboard, driver: :keyboard, connection: :keyboard
 
 work do
-  $timeout = 5
-  $last_press_time = nil
-  $clicks = 0
-
   puts "Start clicking"
   on keyboard, :key => :keypress
 end
@@ -18,12 +22,15 @@ end
 def keypress(sender, key)
   return unless key == 'space'
   $last_press_time ||= Time.now # only used for first iteration
+
   if $last_press_time < (Time.now - $timeout)
-    puts "Starting loop, you have #{$timeout} seconds"
+    puts "Starting, you must click at least once every #{$timeout} seconds"
     $clicks = 1
   else
     $clicks += 1
+
   end
   $last_press_time = Time.now
   puts $clicks
+  puts "YOU WIN" if $clicks == $winning_clicks
 end
