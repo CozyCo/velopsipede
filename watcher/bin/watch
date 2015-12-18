@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'artoo'
+require 'net/http'
 
 # Max time between clicks, we reset the count to 0 if exceeded
 $timeout = 5
@@ -26,6 +27,7 @@ end
 
 def click
   if $last_click_time < (Time.now - $timeout)
+    $clicks = 0
     puts "Starting, you must click at least once every #{$timeout} seconds"
   end
   $clicks += 1
@@ -36,4 +38,12 @@ end
 
 def win
   puts "you win!"
+  do_derpler
+end
+
+def do_derpler
+  uri = URI('http://ci.int.cozy.co/go/api/pipelines/velopsipede/schedule')
+  http = Net::HTTP.new(uri.host, uri.port)
+  request = Net::HTTP::Post.new(uri.request_uri)
+  response = http.request(request)
 end
