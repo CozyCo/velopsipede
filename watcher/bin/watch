@@ -84,14 +84,6 @@ def led(color, value)
   end
 end
 
-def maybe_toggle_yellow_led
-  if Time.now.to_ms > 500
-    led('yellow', 1)
-  else
-    led('yellow', 0)
-  end
-end
-
 at_exit do
   led('green', 0)
   led('yellow', 0)
@@ -103,6 +95,5 @@ led('yellow', 0)
 
 loop do
   check_button if $pi
-  maybe_toggle_yellow_led
   sleep 0.001
 end
