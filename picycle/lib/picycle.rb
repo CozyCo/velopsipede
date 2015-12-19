@@ -28,7 +28,7 @@ class Picycle
 		@last_click_time = Time.now
 		@num_clicks = 0
 		@last_magnet_state = 0
-		@loop_timer_seconds = devmode ? 1: 0.001
+		@loop_timer_seconds = devmode ? 0.2: 0.001
 
 		require 'picycle/fake_piface' if devmode
 
