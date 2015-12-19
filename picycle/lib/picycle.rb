@@ -4,11 +4,14 @@ require 'aws-sdk'
 begin
 	require 'piface'
 rescue LoadError
-	puts 'Could not load piface library. Run with argument "devmode" to use fake_piface stub'
+	puts 'Could not load piface library. Loading fake_piface library for development.'
+	require 'picycle/fake_piface'
 end
 
+require 'picycle/leds'
+
 class Picycle
-	require 'picycle/leds'
+
 	include Picycle::LEDs
 
 	# Max time in seconds between clicks, we reset the click count to 0 if exceeded
@@ -24,16 +27,13 @@ class Picycle
 	attr_accessor :last_click_time, :num_clicks, :last_magnet_state, :loop_timer_seconds, :devmode
 
 
-	def initialize(devmode = false)
-		@devmode = devmode
+	def initialize()
+		@devmode = defined?(Piface.is_fake?)
 
 		@last_click_time = Time.now
 		@num_clicks = 0
 		@last_magnet_state = 0
 		@loop_timer_seconds = @devmode ? 0.2: 0.001
-
-		# Load a Piface stub that logs pin status and accepts keyboard input, if we are devmode.
-		require 'picycle/fake_piface' if @devmode
 
 		# Ensure LEDs are turned off, in case the program exited abnormally last time
 		turn_green_led_off

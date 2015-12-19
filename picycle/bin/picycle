@@ -5,5 +5,4 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'picycle'
 
-devmode = ARGV[0] && ARGV[0] == 'devmode' ? true : false
-Picycle.new(devmode).run
+Picycle.new.run
