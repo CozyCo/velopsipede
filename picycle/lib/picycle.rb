@@ -14,28 +14,31 @@ rescue LoadError
 end
 
 require 'picycle/deployer'
+require 'picycle/distance'
 require 'picycle/led'
 require 'picycle/tracker'
+require 'picycle/ui'
 
-class Picycle
+module Picycle
 
-  def initialize(km_to_deploy = 0.1)
-    @led = LED.new($piface)
-    @deployer = Deployer.new($devmode)
-    @tracker = Tracker.new($piface, @led, @deployer, km_to_deploy)
-  end
-
+  module_function
 
   def run
-    @led.reset
-    at_exit do
-      @led.reset
-    end
-    puts @tracker.message
+    led = LED.new($piface)
+    deployer = Deployer.new($devmode)
+    ui = UI.new
+    tracker = Tracker.new( $piface, led, deployer, ui.get_distance )
+
+    led.reset
+    puts tracker.message
+
     loop do
-      @tracker.process_frame
+      tracker.process_frame
       sleep 0.001
     end
+
+  ensure
+    led.reset
   end
 
 end

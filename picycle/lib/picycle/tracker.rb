@@ -16,6 +16,7 @@ class Tracker
     @succeeded = false
   end
 
+
   def process_frame
     state = @piface.read(0)
     if @last_button_state != state
