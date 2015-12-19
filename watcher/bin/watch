@@ -4,7 +4,7 @@ require 'aws-sdk'
 
 begin
   require 'piface'
-  $pi == true
+  $pi = true
 rescue
   $pi = false
 end
