@@ -3,7 +3,8 @@ require 'mrdialog'
 class UI
 
   def initialize
-    @title = 'Velopsipede'
+    @dialog = MRDialog.new
+    @dialog.title = 'Velopsipede'
   end
 
   def get_distance
@@ -29,9 +30,7 @@ EOF
     width = 0
     menu_height = items.length
 
-    dialog = MRDialog.new
-    dialog.title = @title
-    return dialog.menu(text, items, height, width, menu_height).to_f
+    return @dialog.menu(text, items, height, width, menu_height).to_f
   end
 
 end
