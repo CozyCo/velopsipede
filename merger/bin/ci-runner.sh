@@ -4,7 +4,13 @@ if [ -f /var/lib/cozy/credentials/github-access-key.sh ]; then
 else
   echo 'Did not source /var/lib/cozy/credentials/github-access-key.sh'
 fi
-bundle install
-bundle exec bin/merge mgreensmith/testrepo
 
-bundle exec slack-post -s cozy -r naboo -m "The velopsipede has fired! Marketing production deploy is imminent!!"
+if [ -f /var/lib/cozy/credentials/slack-token.sh ]; then
+  . /var/lib/cozy/credentials/slack-token.sh
+else
+  echo 'Did not source /var/lib/cozy/credentials/slack-token.sh'
+fi
+bundle install
+bundle exec bin/merge CozyCo/marketing-jekyll
+
+bundle exec slack-post -s cozy -r marketing -m "The velopsipede has fired! Marketing production deploy is imminent!!"
