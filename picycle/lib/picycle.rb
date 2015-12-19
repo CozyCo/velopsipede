@@ -12,7 +12,7 @@ class Picycle
 	include Picycle::LEDs
 
 	# Max time in seconds between clicks, we reset the click count to 0 if exceeded
-	CLICK_TIMEOUT = 2
+	CLICK_TIMEOUT = 5
 
 	# The number of clicks needed to win
 	NUM_CLICKS_TO_WIN = 100
@@ -21,16 +21,16 @@ class Picycle
 	PIFACE_MAGNET_INPUT = 0
 
 
-	attr_accessor :devmode, :last_click_time, :num_clicks, :last_magnet_state
+	attr_accessor :last_click_time, :num_clicks, :last_magnet_state, :loop_timer_seconds
 
 
 	def initialize(devmode = false)
 		@last_click_time = Time.now
 		@num_clicks = 0
 		@last_magnet_state = 0
+		@loop_timer_seconds = devmode ? 1: 0.001
 
-		@devmode = devmode
-		require 'picycle/fake_piface' if @devmode
+		require 'picycle/fake_piface' if devmode
 
 		# Ensure LEDs are turned off, in case the program exited abnormally last time
 		turn_green_led_off
@@ -50,7 +50,7 @@ class Picycle
 	def restart
 		@num_clicks = 0
 		puts "Starting, you must click at least once every #{CLICK_TIMEOUT} seconds"
-		led('green', 0)
+		turn_green_led_off
 	end
 
 
@@ -81,12 +81,12 @@ class Picycle
 
 
 	def check_button
-		state = Piface.read(0)
+		state = Piface.read(PIFACE_MAGNET_INPUT)
 		if @last_magnet_state != state
 			if state == 1
 				click
 				sleep 0.02
-				if $clicks % 2 == 0
+				if @num_clicks % 2 == 0
 					turn_yellow_led_on
 				else
 					turn_yellow_led_off
@@ -100,7 +100,7 @@ class Picycle
 	def run
 		loop do
 			check_button
-			sleep 0.001
+			sleep @loop_timer_seconds
 		end
 
 		at_exit do
