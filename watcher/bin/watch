@@ -50,13 +50,12 @@ def do_derpler
 end
 
 def capture_portrait
-  time = Time.now
-  filename = "pederplerer-#{time}.jpg"
-  `fswebcam -r 1280x720 --no-banner /home/pi/#{filename}`
+  filename = "/home/pi/photos/pederplerer-#{Time.now.to_i}.jpg"
+  `fswebcam -r 1280x720 --no-banner #{filename}`
 
   s3 = Aws::S3::Resource.new(region:'us-west-2')
   obj = s3.bucket('bikeface').object(filename)
-  obj.upload_file("~/#{filename}", {:acl => 'public-read'})
+  obj.upload_file(filename, {:acl => 'public-read'})
 end
 
 def check_button
