@@ -21,16 +21,19 @@ class Picycle
 	PIFACE_MAGNET_INPUT = 0
 
 
-	attr_accessor :last_click_time, :num_clicks, :last_magnet_state, :loop_timer_seconds
+	attr_accessor :last_click_time, :num_clicks, :last_magnet_state, :loop_timer_seconds, :devmode
 
 
 	def initialize(devmode = false)
+		@devmode = devmode
+
 		@last_click_time = Time.now
 		@num_clicks = 0
 		@last_magnet_state = 0
-		@loop_timer_seconds = devmode ? 0.2: 0.001
+		@loop_timer_seconds = @devmode ? 0.2: 0.001
 
-		require 'picycle/fake_piface' if devmode
+		# Load a Piface stub that logs pin status and accepts keyboard input, if we are devmode.
+		require 'picycle/fake_piface' if @devmode
 
 		# Ensure LEDs are turned off, in case the program exited abnormally last time
 		turn_green_led_off
@@ -57,8 +60,8 @@ class Picycle
 	def win
 		puts "You did it! Smile for the camera, it's deploy time!"
 		turn_green_led_on
-		do_derpler
-		capture_portrait
+		do_derpler unless @devmode
+		capture_portrait unless @devmode
 	end
 
 
