@@ -16,13 +16,15 @@ end
 require 'picycle/deployer'
 require 'picycle/led'
 require 'picycle/tracker'
+require 'picycle/ui'
 
 class Picycle
 
-  def initialize(km_to_deploy = 0.1)
+  def initialize
     @led = LED.new($piface)
     @deployer = Deployer.new($devmode)
-    @tracker = Tracker.new($piface, @led, @deployer, km_to_deploy)
+    km_to_deploy = UI.new.get_distance
+    @tracker = Tracker.new( $piface, @led, @deployer, km_to_deploy )
   end
 
 

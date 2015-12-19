@@ -5,5 +5,4 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'picycle'
 
-km = (ARGV[0] || 0.01).to_f
-Picycle.new(km).run
+Picycle.new.run
