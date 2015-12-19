@@ -19,11 +19,10 @@ require 'picycle/tracker'
 
 class Picycle
 
-  def initialize(units_to_deploy = 100)
+  def initialize(km_to_deploy = 0.1)
     @led = LED.new($piface)
     @deployer = Deployer.new($devmode)
-    @units_to_deploy = units_to_deploy.to_i
-    @tracker = Tracker.new( $piface, @led, @deployer, @units_to_deploy )
+    @tracker = Tracker.new($piface, @led, @deployer, km_to_deploy)
   end
 
 
@@ -32,7 +31,7 @@ class Picycle
     at_exit do
       @led.reset
     end
-    puts @tracker.status_message
+    puts @tracker.message
     loop do
       @tracker.process_frame
       sleep 0.001

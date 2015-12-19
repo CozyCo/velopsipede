@@ -1,7 +1,7 @@
 class PifaceStub
 
   def write(output_pin, value)
-    puts "DEBUG: Setting pin #{output_pin} to #{value}"
+    # puts "DEBUG: Setting pin #{output_pin} to #{value}"
   end
 
   def read(*)

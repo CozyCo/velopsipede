@@ -1,17 +1,19 @@
+require 'picycle/distance'
+
 
 class Tracker
 
   # Max time between clicks, reset the count to 0 if exceeded
   TIMEOUT = 5
 
-  def initialize( piface, led, deployer, revs_to_deploy )
+  def initialize( piface, led, deployer, km_to_deploy )
     @piface = piface
     @led = led
     @deployer = deployer
-    @revs_to_deploy = revs_to_deploy
+    @distance = Distance.new(km_to_deploy)
     @last_button_state = 0
-    @click_count = 0
     @last_click_time = Time.now
+    @succeeded = false
   end
 
   def process_frame
@@ -29,43 +31,35 @@ class Tracker
     if @last_click_time < (Time.now - TIMEOUT)
       self.restart
       puts "Restarting. You must revolve at least once every #{TIMEOUT} seconds."
+    elsif @succeeded
+      # noop
     else
-      @click_count += 1
-      puts self.status_message
-      if @click_count < @revs_to_deploy
-        @led.set(:inprogress, @click_count % 2)
-      elsif @click_count == @revs_to_deploy
+      @distance.revolve
+      puts @distance.message
+      if @distance.finished?
         self.succeed
+      else
+        @led.set(:inprogress, @distance.current_rev % 2)
       end
     end
     @last_click_time = Time.now
   end
 
   def restart
-    @click_count = 0
+    @succeeded = false
+    @distance.reset
     @led.reset
   end
 
   def succeed
+    @succeeded = true
     @led.enable(:success)
     @deployer.deploy
     @deployer.take_photo
   end
 
-
-  def status_message
-    if @click_count == 0
-      return "Let's do this! You have to go #{@revs_to_deploy} revolutions to deploy."
-    end
-    if @revs_to_deploy - @click_count == 0
-      return "You've done it! A deploy is on its way."
-    end
-    if @revs_to_deploy - @click_count < 0
-      return nil
-    end
-    if @click_count % 5 == 0
-      return "You've gone #{@click_count} revs, #{@revs_to_deploy - @click_count} to go."
-    end
-    return nil
+  def message
+    return @distance.message
   end
+
 end
