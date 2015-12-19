@@ -19,29 +19,26 @@ require 'picycle/led'
 require 'picycle/tracker'
 require 'picycle/ui'
 
-class Picycle
+module Picycle
 
-  def initialize
-    @led = LED.new($piface)
-    @deployer = Deployer.new($devmode)
-    @tracker = Tracker.new( $piface, @led, @deployer )
-  end
-
+  module_function
 
   def run
-    @led.reset
-    at_exit do
-      @led.reset
-    end
+    led = LED.new($piface)
+    deployer = Deployer.new($devmode)
+    ui = UI.new
+    tracker = Tracker.new( $piface, led, deployer, ui.get_distance )
 
-    @tracker.km_to_deploy = UI.new.get_distance
-    puts @tracker.message
+    led.reset
+    puts tracker.message
 
     loop do
-      @tracker.process_frame
+      tracker.process_frame
       sleep 0.001
     end
 
+  ensure
+    led.reset
   end
 
 end

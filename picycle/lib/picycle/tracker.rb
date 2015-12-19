@@ -6,7 +6,7 @@ class Tracker
   # Max time between clicks, reset the count to 0 if exceeded
   TIMEOUT = 5
 
-  def initialize( piface, led, deployer, km_to_deploy = 0 )
+  def initialize( piface, led, deployer, km_to_deploy )
     @piface = piface
     @led = led
     @deployer = deployer
@@ -14,11 +14,6 @@ class Tracker
     @last_button_state = 0
     @last_click_time = Time.now
     @succeeded = false
-  end
-
-
-  def km_to_deploy=(new_km_to_deploy)
-    @distance = Distance.new(new_km_to_deploy)
   end
 
 
