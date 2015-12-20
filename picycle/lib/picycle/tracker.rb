@@ -6,8 +6,6 @@ class Tracker
   # Max time between revolutions, abort the ride if exceeded
   TIMEOUT = 30
 
-  attr_reader :succeeded
-
   def initialize( piface, led, km_to_deploy )
     @piface = piface
     @led = led
@@ -21,7 +19,6 @@ class Tracker
   # is in progress, false if the ride is completed or timed-out
   def process_interval
     if @last_revolution_time < (Time.now - TIMEOUT)
-      self.reset
       return false
     end
 
@@ -34,7 +31,7 @@ class Tracker
     end
     @last_button_state = state
 
-    return false if self.succeeded
+    return false if @succeeded
     return true
   end
 
@@ -50,15 +47,13 @@ class Tracker
     @last_revolution_time = Time.now
   end
 
-  def reset
-    @succeeded = false
-    @distance.reset
-    @led.reset
-  end
-
   def succeed
     @succeeded = true
     @led.enable(:success)
+  end
+
+  def succeeded?
+    @succeeded
   end
 
   def message

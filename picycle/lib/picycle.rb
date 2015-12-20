@@ -43,7 +43,7 @@ module Picycle
     end
 
     # TODO: A success screen or something, and then a way to start all over again.
-    if tracker.succeeded
+    if tracker.succeeded?
       deployer.deploy
       deployer.take_photo
     else

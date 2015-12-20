@@ -24,10 +24,6 @@ class Distance
     @current_rev += 1
   end
 
-  def reset
-    @current_rev = 0
-  end
-
   def km_traveled
     return cm2km(@current_rev * CM_PER_REV)
   end
