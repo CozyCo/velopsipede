@@ -13,8 +13,6 @@ class Distance
 
   CM_PER_REV = 189 # Tire circumference
 
-  REVS_BETWEEN_PROGRESS = 10
-
   attr_reader :current_rev
 
   def initialize(goal_km)
@@ -38,6 +36,10 @@ class Distance
     return @target_km - self.km_traveled
   end
 
+  def percent_complete
+    return ((self.km_traveled / @target_km) * 100).to_i
+  end
+
   def at_start?
     return self.km_traveled == 0
   end
@@ -48,15 +50,13 @@ class Distance
 
   def message
     if self.at_start?
-      return "Let's to this! You have to go #{self.km_left}km to deploy."
+      return "Let's do this! You have to go #{self.km_left}km to deploy."
     end
     if self.finished?
       return "You've done it! A deploy is on its way."
     end
-    if self.current_rev % REVS_BETWEEN_PROGRESS == 0
-      return "You've gone #{self.km_traveled.round(3)}km, #{self.km_left.round(3)} to go."
-    end
-    return nil
+
+    return "You've gone #{self.km_traveled.round(3)}km, #{self.km_left.round(3)}km to go."
   end
 
 end

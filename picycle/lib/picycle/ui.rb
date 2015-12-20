@@ -2,6 +2,8 @@ require 'mrdialog'
 
 class UI
 
+  attr_accessor :dialog
+
   def initialize
     @dialog = MRDialog.new
     @dialog.title = 'Velopsipede'
@@ -31,6 +33,15 @@ EOF
     menu_height = items.length
 
     return @dialog.menu(text, items, height, width, menu_height).to_f
+  end
+
+  # Yes, dialog gauges really do use 'XXX' as a delimiter
+  # http://www.rubydoc.info/gems/mrdialog/1.0.1/MRDialog%3Agauge
+  def update_gauge(gauge, percent, message)
+    gauge.puts "XXX"
+    gauge.puts percent
+    gauge.puts message
+    gauge.puts "XXX"
   end
 
 end

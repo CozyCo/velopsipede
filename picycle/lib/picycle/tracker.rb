@@ -3,50 +3,54 @@ require 'picycle/distance'
 
 class Tracker
 
-  # Max time between clicks, reset the count to 0 if exceeded
-  TIMEOUT = 5
+  # Max time between revolutions, abort the ride if exceeded
+  TIMEOUT = 30
 
-  def initialize( piface, led, deployer, km_to_deploy )
+  attr_reader :succeeded
+
+  def initialize( piface, led, km_to_deploy )
     @piface = piface
     @led = led
-    @deployer = deployer
     @distance = Distance.new(km_to_deploy)
     @last_button_state = 0
-    @last_click_time = Time.now
+    @last_revolution_time = Time.now
     @succeeded = false
   end
 
+  # Main event loop while riding. Returns true while the ride
+  # is in progress, false if the ride is completed or timed-out
+  def process_interval
+    if @last_revolution_time < (Time.now - TIMEOUT)
+      self.reset
+      return false
+    end
 
-  def process_frame
     state = @piface.read(0)
     if @last_button_state != state
       if state == 1
-        self.click
-        sleep 0.02
+        self.revolve
+        #sleep 0.02 #for button debounce, maybe not needed
       end
     end
     @last_button_state = state
+
+    return false if self.succeeded
+    return true
   end
 
-  def click
-    if @last_click_time < (Time.now - TIMEOUT)
-      self.restart
-      puts "Restarting. You must revolve at least once every #{TIMEOUT} seconds."
-    elsif @succeeded
-      # noop
-    else
+  def revolve
+    unless @succeeded
       @distance.revolve
-      puts @distance.message
       if @distance.finished?
         self.succeed
       else
         @led.set(:inprogress, @distance.current_rev % 2)
       end
     end
-    @last_click_time = Time.now
+    @last_revolution_time = Time.now
   end
 
-  def restart
+  def reset
     @succeeded = false
     @distance.reset
     @led.reset
@@ -55,12 +59,14 @@ class Tracker
   def succeed
     @succeeded = true
     @led.enable(:success)
-    @deployer.deploy
-    @deployer.take_photo
   end
 
   def message
     return @distance.message
+  end
+
+  def percent_complete
+    return @distance.percent_complete
   end
 
 end
