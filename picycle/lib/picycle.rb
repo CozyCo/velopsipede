@@ -51,7 +51,7 @@ module Picycle
     end
 
   ensure
-    led.reset
+    led.reset unless led.nil?
   end
 
 end
