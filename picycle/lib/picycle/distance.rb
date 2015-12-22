@@ -52,7 +52,7 @@ class Distance
       return "You've done it! A deploy is on its way."
     end
 
-    return "You've gone #{self.km_traveled.round(3)}km, #{self.km_left.round(3)}km to go."
+    return "You've gone %.3fkm, %.3fkm to go." % [self.km_traveled, self.km_left]
   end
 
 end
