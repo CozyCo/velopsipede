@@ -32,7 +32,7 @@ EOF
     width = 0
     menu_height = items.length
 
-    return @dialog.menu(text, items, height, width, menu_height).to_f
+    return @dialog.menu(text, items, height, width, menu_height)
   end
 
   # Yes, dialog gauges really do use 'XXX' as a delimiter

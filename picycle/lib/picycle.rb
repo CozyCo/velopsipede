@@ -29,7 +29,14 @@ module Picycle
     led = LED.new($piface)
     deployer = Deployer.new($devmode)
     ui = UI.new
-    tracker = Tracker.new($piface, led, ui.get_distance)
+
+    chosen_distance = ui.get_distance
+    if chosen_distance == false
+      puts "The bike will be ready when you are. Bye!"
+      exit
+    end
+
+    tracker = Tracker.new($piface, led, ui.get_distance.to_f)
 
     led.reset
 
