@@ -16,11 +16,10 @@ class Tracker
   end
 
   # Main event loop while riding. Returns true while the ride
-  # is in progress, false if the ride is completed or timed-out
+  # is in progress, false if the ride has succeeded or timed out.
   def process_interval
-    if @last_revolution_time < (Time.now - TIMEOUT)
-      return false
-    end
+    timed_out = @last_revolution_time < (Time.now - TIMEOUT)
+    return false if timed_out
 
     state = @piface.read(0)
     if @last_button_state != state
