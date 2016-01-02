@@ -7,12 +7,9 @@ class UI
   DEFAULT_DIALOG_WIDTH = 80
   DEFAULT_DIALOG_HEIGHT = 20
 
-  attr_accessor :clear
-
   def initialize
     @dialog = MRDialog.new
     @dialog.title = 'Velopsipede'
-    @dialog.clear = true
     @last_ui_update_time = Time.now
   end
 
@@ -43,14 +40,12 @@ EOF
   end
 
   def infobox(message)
-    text = message
-    return @dialog.infobox(text, DEFAULT_DIALOG_HEIGHT, DEFAULT_DIALOG_WIDTH)
+    return @dialog.infobox(message, DEFAULT_DIALOG_HEIGHT, DEFAULT_DIALOG_WIDTH)
   end
 
   def pausebox(message)
-    text = message
     delay = 10 # seconds
-    return @dialog.pause(text, DEFAULT_DIALOG_HEIGHT, DEFAULT_DIALOG_WIDTH, delay)
+    return @dialog.pause(message, DEFAULT_DIALOG_HEIGHT, DEFAULT_DIALOG_WIDTH, delay)
   end
 
   # Yes, dialog gauges really do use 'XXX' as a delimiter
