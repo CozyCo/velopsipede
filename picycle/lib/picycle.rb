@@ -25,7 +25,7 @@ module Picycle
 
   module_function
 
-  def run
+  def play_game
     led = LED.new($piface)
     deployer = Deployer.new($devmode)
     ui = UI.new
@@ -62,6 +62,12 @@ module Picycle
 
   ensure
     led.reset unless led.nil?
+  end
+
+  def run
+    while true
+      play_game
+    end
   end
 
 end
