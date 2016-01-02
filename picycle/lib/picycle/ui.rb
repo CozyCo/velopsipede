@@ -10,6 +10,7 @@ class UI
   def initialize
     @dialog = MRDialog.new
     @dialog.title = 'Velopsipede'
+    @dialog.nocancel = true
     @last_ui_update_time = Time.now
   end
 
