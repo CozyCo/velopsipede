@@ -10,9 +10,10 @@ class Deployer
     http = Net::HTTP.new(uri.host, uri.port)
     request = Net::HTTP::Post.new(uri.request_uri)
     if @dryrun
-      puts "Would deploy to #{uri.to_s}"
+      return "Would deploy to #{uri.to_s}"
     else
       http.request(request)
+      return "Triggered a deploy"
     end
   end
 
@@ -21,9 +22,9 @@ class Deployer
     time = Time.now.strftime('%Y-%m-%d_%H-%M-%S')
     filename = "/home/pi/photos/pederplerer-#{time}.jpg"
     if @dryrun
-      puts "Would take a photo saved to #{filename}"
+      return "Would take a photo saved to #{filename}"
     else
-      `fswebcam -r 1280x720 --no-banner #{filename}`
+      return `fswebcam -r 1280x720 --no-banner #{filename} 2<&1`
     end
 
 #  s3 = Aws::S3::Resource.new(region:'us-west-2')
