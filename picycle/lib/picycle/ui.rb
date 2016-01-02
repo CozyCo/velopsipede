@@ -25,7 +25,7 @@ Choose your ride distance (km):
 EOF
 
     items = [
-      [0.01, "Sprint"],
+      [0.1, "Sprint"],
       [0.2, "Long Ride"],
       [0.5, "Century"],
       [1.0, "Gino"],

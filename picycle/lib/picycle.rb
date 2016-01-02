@@ -36,7 +36,7 @@ module Picycle
       exit
     end
 
-    tracker = Tracker.new($piface, led, ui.get_distance.to_f)
+    tracker = Tracker.new($piface, led, chosen_distance.to_f)
 
     led.reset
 
@@ -51,11 +51,11 @@ module Picycle
 
     # TODO: A success screen or something, and then a way to start all over again.
     if tracker.succeeded?
-      ui.infobox("Congrats, taking your pic in a sec.")
-      sleep 3
-      ui.infobox(deployer.deploy)
+      ui.infobox("FPO: Congrats, taking your pic in a sec.")
       sleep 3
       ui.infobox(deployer.take_photo)
+      sleep 3
+      ui.infobox(deployer.deploy)
       sleep 3
       ui.pausebox("FPO: The game is complete. Press Enter to restart.")
     else
