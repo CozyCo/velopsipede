@@ -43,8 +43,7 @@ EOF
     return @dialog.infobox(message, DEFAULT_DIALOG_HEIGHT, DEFAULT_DIALOG_WIDTH)
   end
 
-  def pausebox(message)
-    delay = 10 # seconds
+  def pausebox(message, delay=10)
     return @dialog.pause(message, DEFAULT_DIALOG_HEIGHT, DEFAULT_DIALOG_WIDTH, delay)
   end
 

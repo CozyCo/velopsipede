@@ -51,10 +51,8 @@ module Picycle
 
     # TODO: A success screen or something, and then a way to start all over again.
     if tracker.succeeded?
-      ui.infobox("FPO: Congrats, taking your pic in a sec.")
-      sleep 3
-      ui.infobox(deployer.take_photo)
-      sleep 3
+      ui.pausebox("FPO: Congrats, taking your pic in a sec.", 3)
+      deployer.take_photo
       ui.infobox(deployer.deploy)
       sleep 3
       ui.pausebox("FPO: The game is complete. Press Enter to restart.")
