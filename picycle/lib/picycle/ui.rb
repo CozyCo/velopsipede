@@ -1,12 +1,13 @@
 require 'mrdialog'
 
 class UI
-
   attr_accessor :dialog
+  MIN_UI_UPDATE_INTERVAL = 0.1
 
   def initialize
     @dialog = MRDialog.new
     @dialog.title = 'Velopsipede'
+    @last_ui_update_time = Time.now
   end
 
   def get_distance
@@ -38,10 +39,13 @@ EOF
   # Yes, dialog gauges really do use 'XXX' as a delimiter
   # http://www.rubydoc.info/gems/mrdialog/1.0.1/MRDialog%3Agauge
   def update_gauge(gauge, percent, message)
-    gauge.puts "XXX"
-    gauge.puts percent
-    gauge.puts message
-    gauge.puts "XXX"
+    if Time.now - @last_ui_update_time > MIN_UI_UPDATE_INTERVAL || percent == 100
+      @last_ui_update_time = Time.now
+      gauge.puts "XXX"
+      gauge.puts percent
+      gauge.puts message
+      gauge.puts "XXX"
+    end
   end
 
 end
