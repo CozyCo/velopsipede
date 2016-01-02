@@ -53,8 +53,8 @@ module Picycle
     if tracker.succeeded?
       ui.pausebox("FPO: Congrats, taking your pic in a sec.", 3)
       deployer.take_photo
-      ui.infobox(deployer.deploy)
-      sleep 3
+      ui.infobox("FPO: Triggering a deploy")
+      ui.pausebox(deployer.deploy, 3)
       ui.pausebox("FPO: The game is complete. Press Enter to restart.")
     else
       ui.pausebox("FPO: You were idle too long.")
