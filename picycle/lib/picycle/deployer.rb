@@ -10,7 +10,7 @@ class Deployer
       %w( github_repo github_access_key ).each do |required_config_key|
         fail "#{required_config_key} is not set" unless @config.key?(required_config_key)
       end
-      @gh = Octokit::Client.new(access_token: @config(github_access_key))
+      @gh = Octokit::Client.new(access_token: @config['github_access_key'])
     end
   end
 
@@ -25,7 +25,7 @@ class Deployer
   private
 
   def perform_merge
-    repo = @config(github_repo)
+    repo = @config['github_repo']
     out = []
     out << "Merging develop to master of #{repo}"
     out << "SHA of master is #{@gh.ref(repo, 'heads/master')[:object][:sha]}"
