@@ -3,6 +3,7 @@ require 'rest-client'
 class Camera
 
   PHOTO_STORAGE_DIR = '~/picycle_photos'
+  CAMERA_LOG = '~/fswebcam.log'
 
   def initialize(dryrun, config)
     @dryrun = dryrun
@@ -22,7 +23,7 @@ class Camera
       @photo_file = nil
       return "Would take a photo saved to #{filename}"
     else
-      @photo_file = `fswebcam -r 1280x720 --no-banner #{filename} 2<&1`
+      @photo_file = `fswebcam -r 1024x768 -p YUYV -S3 --no-banner #{filename} >> #{CAMERA_LOG} 2<&1`
       return "Saved photo to #{@photo_file}"
     end
   end
