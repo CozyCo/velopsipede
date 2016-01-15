@@ -1,6 +1,5 @@
-require 'net/http'
 require 'io/console'
-require 'aws-sdk'
+require 'yaml'
 
 begin
   # noinspection RubyResolve
@@ -13,6 +12,7 @@ rescue LoadError
   $devmode = true
 end
 
+require 'picycle/camera'
 require 'picycle/deployer'
 require 'picycle/distance'
 require 'picycle/led'
@@ -23,12 +23,15 @@ module Picycle
 
   LOOP_INTERVAL = $devmode ? 0.01 : 0.001  # human keypresses are slower than bike wheels
 
+  CONFIG_FILE = File.join(File.expand_path("~"), '.picycle.yml')
+  CONFIG = YAML.load_file(CONFIG_FILE)
+
   module_function
 
   def play_game
+    camera = Camera.new($devmode, CONFIG)
+    deployer = Deployer.new($devmode, CONFIG)
     led = LED.new($piface)
-    deployer = Deployer.new($devmode)
-    camera = Camera.new($devmode)
     ui = UI.new
 
     chosen_distance = ui.get_distance

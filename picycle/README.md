@@ -16,6 +16,14 @@ bundle install --without piface
 bundle exec bin/picycle
 ```
 
+Create a config file at `~/.picycle.yml` containing keys:
+```yaml
+---
+github_repo: myorg/myapp             # GitHub repo in which we will merge develop to master
+github_access_token: vn5o784vgo48v   # GitHub API access token
+imgur_api_client_id: b38967d8200     # Imgur Client ID for anonymous uploads
+```
+
 ### Production
 
 - Runs on a Raspberry Pi with the Piface I/O board.

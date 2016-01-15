@@ -4,12 +4,13 @@ class Camera
 
   PHOTO_STORAGE_DIR = '~/picycle_photos'
 
-  def initialize(dryrun)
+  def initialize(dryrun, config)
     @dryrun = dryrun
+    @config = config
 
     unless dryrun
-      %w( IMGUR_API_CLIENT_ID ).each do |required_env_var|
-        fail "#{required_env_var} is not set" if ENV[required_env_var].nil?
+      %w( imgur_api_client_id ).each do |required_config_key|
+        fail "#{required_config_key} is not set" unless @config.key?(required_config_key)
       end
     end
 
@@ -31,7 +32,7 @@ class Camera
       else
         response = RestClient.post( "https://api.imgur.com/3/image",
           { image: Base64.encode64(File.read(@photo_file) },
-          { Authorization: "Client-ID #{ENV['IMGUR_API_CLIENT_ID']}" }
+          { Authorization: "Client-ID #{@config['imgur_api_client_id']}" }
         )
         @photo_url = JSON.parse(response)['data']['link']
       end
@@ -39,4 +40,3 @@ class Camera
     end
 
   end
-  
