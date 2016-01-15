@@ -18,12 +18,11 @@ class Camera
 
   def take_photo
     time = Time.now.strftime('%Y-%m-%d_%H-%M-%S')
-    filename = File.join(File.expand_path(PHOTO_STORAGE_DIR), "deploy-#{time}.jpg")
+    @photo_file = File.join(File.expand_path(PHOTO_STORAGE_DIR), "deploy-#{time}.jpg")
     if @dryrun
-      @photo_file = nil
-      return "Would take a photo saved to #{filename}"
+      return "Would take a photo saved to #{@photo_file}"
     else
-      @photo_file = `fswebcam -r 1024x768 -p YUYV -S3 --no-banner #{filename} >> #{CAMERA_LOG} 2<&1`
+      `fswebcam -r 1024x768 -p YUYV -S3 --no-banner #{@photo_file} >> #{CAMERA_LOG} 2<&1`
       return "Saved photo to #{@photo_file}"
     end
   end
