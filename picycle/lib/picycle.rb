@@ -55,19 +55,22 @@ module Picycle
       end
     end
 
-    # TODO: A success screen or something, and then a way to start all over again.
     if tracker.succeeded?
-      ui.pausebox("FPO: Congrats, taking your pic in a sec.", 3)
+      ui.pausebox("Congratulations, you completed at #{chosen_distance}km ride.\n\nSmile for the camera!", 3)
+      ui.infobox("Thanks! Performing the merge action now. Hold tight for just a couple seconds.")
       camera.take_photo
       camera.upload_photo
-      ui.infobox("FPO: Triggering a deploy")
-      ui.pausebox(deployer.deploy, 3)
-      message = "Someone completed a #{chosen_distance}km ride on the Velopsipede! " +
-        "They deployed <#{deployer.github_compare_url}|these changes> to the production marketing site."
-      slack.post(message, camera.photo_url)
-      ui.pausebox("FPO: The game is complete. Press Enter to restart.")
+      if deployer.merge
+        ui_message = "OK, done! Your changes have been merged and a production deploy of the marketing site should start momentarily.\n\nThanks for riding the Velopsipede!"
+        slack_message = "Someone completed a #{chosen_distance}km ride on the Velopsipede! They merged <#{deployer.github_compare_url}|these changes> to the production branch of the marketing repo, and a deploy should happen momentarily."
+      else
+        ui_message = "Hrmm, didn't find any new changes on the develop branch of the marketing repo, so there's nothing to merge.\n\nThanks for riding the Velopsipede!"
+        slack_message = "Someone completed a #{chosen_distance}km ride on the Velopsipede, but there weren't any changes to merge, so their effort was for naught. Here's their picture anyway."
+      end
+      slack.post(slack_message, camera.photo_url)
+      ui.pausebox(ui_message)
     else
-      ui.pausebox("FPO: You were idle too long.")
+      ui.pausebox("Aww, you were idle too long, so we cancelled your ride. Press Enter or just wait it out, and the Velopsipede will restart.")
     end
 
   ensure

@@ -6,9 +6,6 @@ class Deployer
     @dryrun = dryrun
     @config = config
 
-    @old_sha = 'master'
-    @new_sha = 'develop'
-
     unless dryrun
       %w( github_repo github_access_key ).each do |required_config_key|
         fail "#{required_config_key} is not set" unless @config.key?(required_config_key)
@@ -17,11 +14,12 @@ class Deployer
     end
   end
 
-  def deploy
-    if @dryrun
-      return "Would perform merge if this wasn't a dry run."
+  def merge
+    if @dryrun || branches_are_identical?
+      return false
     else
-      return perform_merge
+      perform_merge
+      return true
     end
   end
 
@@ -31,16 +29,12 @@ class Deployer
 
   private
 
+  def branches_are_identical?
+    @gh.compare(@config['github_repo'], 'master', 'develop', accept: 'application/vnd.github.diff').empty?
+  end
+
   def perform_merge
-    repo = @config['github_repo']
-    out = []
-    out << "Merging develop to master of #{repo}"
-    @old_sha = @gh.ref(repo, 'heads/master')[:object][:sha]
-    out << "SHA of master is #{@old_sha}"
-    @gh.merge(repo, 'master', 'develop', commit_message: '[velopsipede] Merge develop into master')
-    @new_sha = @gh.ref(repo, 'heads/master')[:object][:sha]
-    out << "new SHA of master is #{@new_sha}"
-    return out.join("\n")
+    @gh.merge(@config['github_repo'], 'master', 'develop', commit_message: '[velopsipede] Merge develop into master')
   end
 
 end
