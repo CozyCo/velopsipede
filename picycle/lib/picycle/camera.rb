@@ -5,6 +5,8 @@ class Camera
   PHOTO_STORAGE_DIR = '~/picycle_photos'
   CAMERA_LOG = '~/fswebcam.log'
 
+  attr_reader :photo_url
+
   def initialize(dryrun, config)
     @dryrun = dryrun
     @config = config

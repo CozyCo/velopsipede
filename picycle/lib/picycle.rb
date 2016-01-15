@@ -16,6 +16,7 @@ require 'picycle/camera'
 require 'picycle/deployer'
 require 'picycle/distance'
 require 'picycle/led'
+require 'picycle/slack_poster'
 require 'picycle/tracker'
 require 'picycle/ui'
 
@@ -32,6 +33,7 @@ module Picycle
     camera = Camera.new($devmode, CONFIG)
     deployer = Deployer.new($devmode, CONFIG)
     led = LED.new($piface)
+    slack = SlackPoster.new($devmode, CONFIG)
     ui = UI.new
 
     chosen_distance = ui.get_distance
@@ -60,6 +62,9 @@ module Picycle
       camera.upload_photo
       ui.infobox("FPO: Triggering a deploy")
       ui.pausebox(deployer.deploy, 3)
+      message = "Someone completed a #{chosen_distance}km ride on the Velopsipede! " +
+        "They deployed <#{deployer.github_compare_url}|these changes> to the production marketing site."
+      slack.post(message, camera.photo_url)
       ui.pausebox("FPO: The game is complete. Press Enter to restart.")
     else
       ui.pausebox("FPO: You were idle too long.")

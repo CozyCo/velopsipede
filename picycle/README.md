@@ -22,6 +22,8 @@ Create a config file at `~/.picycle.yml` containing keys:
 github_repo: myorg/myapp             # GitHub repo in which we will merge develop to master
 github_access_token: vn5o784vgo48v   # GitHub API access token
 imgur_api_client_id: b38967d8200     # Imgur Client ID for anonymous uploads
+slack_webhook_url: https://hooks.slack.com/services/BLAH  # Slack webhook URL
+slack_channel: '#general'            # Slack channel
 ```
 
 ### Production
