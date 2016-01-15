@@ -21,20 +21,7 @@ class Deployer
     end
   end
 
-
-  def take_photo
-    time = Time.now.strftime('%Y-%m-%d_%H-%M-%S')
-    filename = "/home/pi/photos/pederplerer-#{time}.jpg"
-    if @dryrun
-      return "Would take a photo saved to #{filename}"
-    else
-      return `fswebcam -r 1280x720 --no-banner #{filename} 2<&1`
-    end
-
-#  s3 = Aws::S3::Resource.new(region:'us-west-2')
-#  obj = s3.bucket('bikeface').object(filename)
-#  obj.upload_file(filename, {:acl => 'public-read'})
-  end
+  private
 
   def perform_merge
     repo = ENV['GITHUB_REPO']

@@ -28,6 +28,7 @@ module Picycle
   def play_game
     led = LED.new($piface)
     deployer = Deployer.new($devmode)
+    camera = Camera.new($devmode)
     ui = UI.new
 
     chosen_distance = ui.get_distance

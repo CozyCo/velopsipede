@@ -1,8 +1,8 @@
 source 'http://rubygems.org'
 
-gem 'aws-sdk'
 gem 'mrdialog'
 gem 'octokit'
+gem 'rest-client'
 
 group :piface do
   gem 'piface'
