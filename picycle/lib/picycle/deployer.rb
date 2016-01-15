@@ -1,19 +1,23 @@
+require 'octokit'
 
 class Deployer
 
-  def initialize(dryrun)
+  def initialize(dryrun, repo)
     @dryrun = dryrun
+
+    unless dryrun
+      %w( GITHUB_REPO GITHUB_ACCESS_KEY ).each do |required_env_var|
+        fail "#{required_env_var} is not set" if ENV[required_env_var].nil?
+      end
+      @gh = Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_KEY'])
+    end
   end
 
   def deploy
-    uri = URI('http://ci.int.cozy.co/go/api/pipelines/velopsipede/schedule')
-    http = Net::HTTP.new(uri.host, uri.port)
-    request = Net::HTTP::Post.new(uri.request_uri)
     if @dryrun
-      return "Would deploy to #{uri.to_s}"
+      return "Would perform merge if this wasn't a dry run."
     else
-      http.request(request)
-      return "Triggered a deploy"
+      return perform_merge
     end
   end
 
@@ -30,6 +34,16 @@ class Deployer
 #  s3 = Aws::S3::Resource.new(region:'us-west-2')
 #  obj = s3.bucket('bikeface').object(filename)
 #  obj.upload_file(filename, {:acl => 'public-read'})
+  end
+
+  def perform_merge
+    repo = ENV['GITHUB_REPO']
+    out = []
+    out << "Merging develop to master of #{repo}"
+    out << "SHA of master is #{@gh.ref(repo, 'heads/master')[:object][:sha]}"
+    @gh.merge(repo, 'master', 'develop', commit_message: '[velopsipede] Merge develop into master')
+    out << "new SHA of master is #{@gh.ref(repo, 'heads/master')[:object][:sha]}"
+    return out.join("\n")
   end
 
 end
