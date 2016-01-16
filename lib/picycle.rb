@@ -7,7 +7,7 @@ begin
   $piface = Piface
   $devmode = false
 rescue LoadError
-  require 'picycle/piface_stub'
+  require 'piface/piface_stub'
   $piface = PifaceStub.new
   $devmode = true
 end

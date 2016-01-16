@@ -1,3 +1,4 @@
+
 class PifaceStub
 
   def write(output_pin, value)
