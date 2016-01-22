@@ -27,6 +27,14 @@ module Picycle
   CONFIG_FILE = File.join(File.expand_path("~"), '.picycle.yml')
   CONFIG = YAML.load_file(CONFIG_FILE)
 
+  DISTANCE_CHOICES = [
+    [0.1, "Sprint"],
+    [0.5, "Long Ride"],
+    [1.0, "Century"],
+    [10.0, "Gino"],
+    [100.0, "Starla"]
+  ]
+
   module_function
 
   def play_game
@@ -36,11 +44,10 @@ module Picycle
     slack = SlackPoster.new($devmode, CONFIG)
     ui = UI.new
 
-    chosen_distance = ui.get_distance
-    if chosen_distance == false
-      puts "The bike will be ready when you are. Bye!"
-      exit
-    end
+    welcome_text = "Welcome to the Velopsipede!\n\nCompleting a ride will trigger a merge of develop branch to master branch of the marketing-jekyll repository.\n\nThis will trigger a production deploy of the marketing site.\n\nChoose your ride distance (km):"
+
+    chosen_distance = ui.menubox(welcome_text, DISTANCE_CHOICES)
+    exit if chosen_distance == false
 
     tracker = Tracker.new($piface, led, chosen_distance.to_f)
 
