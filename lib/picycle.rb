@@ -34,7 +34,22 @@ module Picycle
     [100.0, 'Starla']
   ]
 
+  WELCOME_MESSAGE = "Welcome to the Velopsipede!\n\nCompleting a ride will trigger a merge of develop branch to master branch of the marketing-jekyll repository.\n\nThis will trigger a production deploy of the marketing site.\n\nChoose your ride distance (km):"
+  RIDE_COMPLETED_MESSAGE = "Congratulations, you completed your ride.\n\nSmile for the camera!"
+  MERGE_PENDING_MESSAGE = 'Thanks! Performing the merge action now. Hold tight for just a couple seconds.'
+  MERGE_SUCCEEDED_MESSAGE = "OK, done! Your changes have been merged and a production deploy of the marketing site should start momentarily.\n\nThanks for riding the Velopsipede!"
+  MERGE_NOOP_MESSAGE = "Hrmm, didn't find any new changes on the develop branch of the marketing repo, so there's nothing to merge.\n\nThanks for riding the Velopsipede!"
+  IDLE_TIMEOUT_MESSAGE = 'Aww, you were idle too long, so we cancelled your ride. Press Enter or just wait it out, and the Velopsipede will restart.'
+
   module_function
+
+  def slack_message(distance, merge_succeeded, compare_url)
+    if merge_succeeded
+      "Someone completed a #{distance}km ride on the Velopsipede! They merged <#{url}|these changes> to the production branch of the marketing repo, and a deploy should happen momentarily."
+    else
+      "Someone completed a #{distance}km ride on the Velopsipede, but there weren't any changes to merge, so their effort was for naught. Here's their picture anyway."
+    end
+  end
 
   def play_game
     camera = Camera.new($devmode, CONFIG)
@@ -43,9 +58,7 @@ module Picycle
     slack = SlackPoster.new($devmode, CONFIG)
     ui = UI.new
 
-    welcome_text = "Welcome to the Velopsipede!\n\nCompleting a ride will trigger a merge of develop branch to master branch of the marketing-jekyll repository.\n\nThis will trigger a production deploy of the marketing site.\n\nChoose your ride distance (km):"
-
-    chosen_distance = ui.menubox(welcome_text, DISTANCE_CHOICES)
+    chosen_distance = ui.menubox(WELCOME_MESSAGE, DISTANCE_CHOICES)
     exit if chosen_distance == false
 
     tracker = Tracker.new($piface, led, chosen_distance.to_f)
@@ -62,21 +75,19 @@ module Picycle
     end
 
     if tracker.succeeded?
-      ui.pausebox("Congratulations, you completed at #{chosen_distance}km ride.\n\nSmile for the camera!", 3)
-      ui.infobox('Thanks! Performing the merge action now. Hold tight for just a couple seconds.')
+      ui.pausebox(RIDE_COMPLETED_MESSAGE, 3)
+      ui.infobox(MERGE_PENDING_MESSAGE)
+
       camera.take_photo
       camera.upload_photo
-      if deployer.merge
-        ui_message = "OK, done! Your changes have been merged and a production deploy of the marketing site should start momentarily.\n\nThanks for riding the Velopsipede!"
-        slack_message = "Someone completed a #{chosen_distance}km ride on the Velopsipede! They merged <#{deployer.github_compare_url}|these changes> to the production branch of the marketing repo, and a deploy should happen momentarily."
-      else
-        ui_message = "Hrmm, didn't find any new changes on the develop branch of the marketing repo, so there's nothing to merge.\n\nThanks for riding the Velopsipede!"
-        slack_message = "Someone completed a #{chosen_distance}km ride on the Velopsipede, but there weren't any changes to merge, so their effort was for naught. Here's their picture anyway."
-      end
-      slack.post(slack_message, camera.photo_url)
+
+      merge_succeeded = deployer.merge
+      ui_message = merge_succeeded ? MERGE_SUCCEEDED_MESSAGE : MERGE_NOOP_MESSAGE
+
+      slack.post(slack_message(chosen_distance, merge_succeeded, deployer.github_compare_url), camera.photo_url)
       ui.pausebox(ui_message)
     else
-      ui.pausebox('Aww, you were idle too long, so we cancelled your ride. Press Enter or just wait it out, and the Velopsipede will restart.')
+      ui.pausebox(IDLE_TIMEOUT_MESSAGE)
     end
 
   ensure
