@@ -2,7 +2,6 @@ require 'octokit'
 
 module Picycle
   class Deployer
-
     def initialize(dryrun, config)
       @dryrun = dryrun
       @config = config
@@ -39,6 +38,5 @@ module Picycle
       @gh.merge(@config['github_repo'], 'master', 'develop', commit_message: '[velopsipede] Merge develop into master')
       @new_sha = @gh.ref(repo, 'heads/master')[:object][:sha]
     end
-
   end
 end

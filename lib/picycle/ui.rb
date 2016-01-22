@@ -16,15 +16,15 @@ module Picycle
     end
 
     def menubox(message, items)
-      return @dialog.menu(message, items, DEFAULT_DIALOG_HEIGHT, DEFAULT_DIALOG_WIDTH, items.length)
+      @dialog.menu(message, items, DEFAULT_DIALOG_HEIGHT, DEFAULT_DIALOG_WIDTH, items.length)
     end
 
     def infobox(message)
-      return @dialog.infobox(message, DEFAULT_DIALOG_HEIGHT, DEFAULT_DIALOG_WIDTH)
+      @dialog.infobox(message, DEFAULT_DIALOG_HEIGHT, DEFAULT_DIALOG_WIDTH)
     end
 
-    def pausebox(message, delay=10)
-      return @dialog.pause(message, DEFAULT_DIALOG_HEIGHT, DEFAULT_DIALOG_WIDTH, delay)
+    def pausebox(message, delay = 10)
+      @dialog.pause(message, DEFAULT_DIALOG_HEIGHT, DEFAULT_DIALOG_WIDTH, delay)
     end
 
     # Yes, dialog gauges really do use 'XXX' as a delimiter
@@ -32,12 +32,11 @@ module Picycle
     def update_gauge(gauge, percent, message)
       if Time.now - @last_ui_update_time > MIN_UI_UPDATE_INTERVAL || percent == 100
         @last_ui_update_time = Time.now
-        gauge.puts "XXX"
+        gauge.puts 'XXX'
         gauge.puts percent
         gauge.puts message
-        gauge.puts "XXX"
+        gauge.puts 'XXX'
       end
     end
-
   end
 end

@@ -2,7 +2,6 @@ require 'rest-client'
 
 module Picycle
   class Camera
-
     PHOTO_STORAGE_DIR = '~/picycle_photos'
     CAMERA_LOG = '~/fswebcam.log'
 
@@ -34,14 +33,13 @@ module Picycle
       if @dryrun
         @photo_url = "Would upload #{@photo_file} to Imgur."
       else
-        response = RestClient.post( "https://api.imgur.com/3/image",
-          { image: Base64.encode64(File.read(@photo_file)) },
-          { Authorization: "Client-ID #{@config['imgur_api_client_id']}" }
-        )
+        response = RestClient.post('https://api.imgur.com/3/image',
+                                   { image: Base64.encode64(File.read(@photo_file)) },
+                                   Authorization: "Client-ID #{@config['imgur_api_client_id']}"
+                                  )
         @photo_url = JSON.parse(response)['data']['link']
       end
-      return @photo_url
+      @photo_url
     end
-
   end
 end

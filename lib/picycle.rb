@@ -21,18 +21,17 @@ require 'picycle/tracker'
 require 'picycle/ui'
 
 module Picycle
+  LOOP_INTERVAL = $devmode ? 0.01 : 0.001 # human keypresses are slower than bike wheels
 
-  LOOP_INTERVAL = $devmode ? 0.01 : 0.001  # human keypresses are slower than bike wheels
-
-  CONFIG_FILE = File.join(File.expand_path("~"), '.picycle.yml')
+  CONFIG_FILE = File.join(File.expand_path('~'), '.picycle.yml')
   CONFIG = YAML.load_file(CONFIG_FILE)
 
   DISTANCE_CHOICES = [
-    [0.1, "Sprint"],
-    [0.5, "Long Ride"],
-    [1.0, "Century"],
-    [10.0, "Gino"],
-    [100.0, "Starla"]
+    [0.1, 'Sprint'],
+    [0.5, 'Long Ride'],
+    [1.0, 'Century'],
+    [10.0, 'Gino'],
+    [100.0, 'Starla']
   ]
 
   module_function
@@ -64,7 +63,7 @@ module Picycle
 
     if tracker.succeeded?
       ui.pausebox("Congratulations, you completed at #{chosen_distance}km ride.\n\nSmile for the camera!", 3)
-      ui.infobox("Thanks! Performing the merge action now. Hold tight for just a couple seconds.")
+      ui.infobox('Thanks! Performing the merge action now. Hold tight for just a couple seconds.')
       camera.take_photo
       camera.upload_photo
       if deployer.merge
@@ -77,7 +76,7 @@ module Picycle
       slack.post(slack_message, camera.photo_url)
       ui.pausebox(ui_message)
     else
-      ui.pausebox("Aww, you were idle too long, so we cancelled your ride. Press Enter or just wait it out, and the Velopsipede will restart.")
+      ui.pausebox('Aww, you were idle too long, so we cancelled your ride. Press Enter or just wait it out, and the Velopsipede will restart.')
     end
 
   ensure
@@ -85,9 +84,8 @@ module Picycle
   end
 
   def run
-    while true
+    loop do
       play_game
     end
   end
-
 end

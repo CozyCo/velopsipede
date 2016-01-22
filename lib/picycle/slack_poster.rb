@@ -2,7 +2,6 @@ require 'slack-post'
 
 module Picycle
   class SlackPoster
-
     def initialize(dryrun, config)
       @dryrun = dryrun
       @config = config
@@ -26,6 +25,5 @@ module Picycle
       }]
       Slack::Post.post_with_attachments('', attachments, @config['slack_channel']) unless @dryrun
     end
-
   end
 end

@@ -1,6 +1,5 @@
 module Picycle
   class LED
-
     NAME_TO_PIN_NUMBER = {
       success: 0, # green LED
       inprogress: 1 # yellow LED
@@ -16,18 +15,17 @@ module Picycle
     end
 
     def enable(name)
-      self.set(name, 1)
+      set(name, 1)
     end
 
     def disable(name)
-      self.set(name, 0)
+      set(name, 0)
     end
 
     def reset
       NAME_TO_PIN_NUMBER.keys.each do |name|
-        self.disable(name)
+        disable(name)
       end
     end
-
   end
 end

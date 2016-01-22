@@ -2,11 +2,10 @@ require 'picycle/distance'
 
 module Picycle
   class Tracker
-
     # Max time between revolutions, abort the ride if exceeded
     TIMEOUT = 30
 
-    def initialize( piface, led, km_to_deploy )
+    def initialize(piface, led, km_to_deploy)
       @piface = piface
       @led = led
       @distance = Distance.new(km_to_deploy)
@@ -24,21 +23,21 @@ module Picycle
       state = @piface.read(0)
       if @last_button_state != state
         if state == 1
-          self.revolve
-          #sleep 0.02 #for button debounce, maybe not needed
+          revolve
+          # sleep 0.02 #for button debounce, maybe not needed
         end
       end
       @last_button_state = state
 
       return false if @succeeded
-      return true
+      true
     end
 
     def revolve
       unless @succeeded
         @distance.revolve
         if @distance.finished?
-          self.succeed
+          succeed
         else
           @led.set(:inprogress, @distance.current_rev % 2)
         end
@@ -56,12 +55,11 @@ module Picycle
     end
 
     def message
-      return @distance.message
+      @distance.message
     end
 
     def percent_complete
-      return @distance.percent_complete
+      @distance.percent_complete
     end
-
   end
 end
