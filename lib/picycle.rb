@@ -23,7 +23,7 @@ require 'picycle/ui'
 module Picycle
   LOOP_INTERVAL = $devmode ? 0.01 : 0.001 # human keypresses are slower than bike wheels
 
-  CONFIG_FILE = File.join(File.expand_path('~'), '.picycle.yml')
+  CONFIG_FILE = File.join(File.expand_path("~"), '.picycle.yml')
   CONFIG = YAML.load_file(CONFIG_FILE)
 
   DISTANCE_CHOICES = [
