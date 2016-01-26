@@ -45,7 +45,7 @@ module Picycle
 
   def slack_message(distance, merge_succeeded, compare_url)
     if merge_succeeded
-      "Someone completed a #{distance}km ride on the Velopsipede! They merged <#{url}|these changes> to the production branch of the marketing repo, and a deploy should happen momentarily."
+      "Someone completed a #{distance}km ride on the Velopsipede! They merged <#{compare_url}|these changes> to the production branch of the marketing repo, and a deploy should happen momentarily."
     else
       "Someone completed a #{distance}km ride on the Velopsipede, but there weren't any changes to merge, so their effort was for naught. Here's their picture anyway."
     end
