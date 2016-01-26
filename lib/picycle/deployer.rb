@@ -34,9 +34,9 @@ module Picycle
     end
 
     def perform_merge
-      @old_sha = @gh.ref(repo, 'heads/master')[:object][:sha]
+      @old_sha = @gh.ref(@config['github_repo'], 'heads/master')[:object][:sha]
       @gh.merge(@config['github_repo'], 'master', 'develop', commit_message: '[velopsipede] Merge develop into master')
-      @new_sha = @gh.ref(repo, 'heads/master')[:object][:sha]
+      @new_sha = @gh.ref(@config['github_repo'], 'heads/master')[:object][:sha]
     end
   end
 end
